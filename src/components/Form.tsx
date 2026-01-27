@@ -2,15 +2,18 @@ import { useActionState } from 'react';
 import supabase from '../supabase-client';
 import type { Metric } from '../types/metrics';
 
-type FormProps = {
+type FormProps = Readonly<{
   metrics: Metric[];
-};
+}>;
 
 function Form({ metrics }: FormProps) {
   const [error, submitAction, isPending] = useActionState<Error | null, FormData>(
     async (_previousState, formData) => {
-      const name = String(formData.get('name') ?? '');
-      const value = Number(formData.get('value') ?? 0);
+      // FormData entries can be strings or files, so validate types before use.
+      const nameEntry = formData.get('name');
+      const valueEntry = formData.get('value');
+      const name = typeof nameEntry === 'string' ? nameEntry : '';
+      const value = typeof valueEntry === 'string' ? Number(valueEntry) : 0;
       const newDeal = {
         name,
         value,
@@ -24,7 +27,7 @@ function Form({ metrics }: FormProps) {
 
       return null;
     },
-    null 
+    null
   );
 
   const generateOptions = () => {
@@ -48,7 +51,7 @@ function Form({ metrics }: FormProps) {
         </div>
 
         <label htmlFor="deal-name">
-          Name:
+          <span>Name:</span>
           <select
             id="deal-name"
             name="name"
@@ -62,7 +65,8 @@ function Form({ metrics }: FormProps) {
         </label>
 
         <label htmlFor="deal-value">
-          Amount: $
+          <span>Amount:</span>
+          <span aria-hidden="true">$</span>
           <input
             id="deal-value"
             type="number"
@@ -88,12 +92,12 @@ function Form({ metrics }: FormProps) {
       </form>
 
       {error && (
-        <div role='alert' className="error-message">
+        <div role="alert" className="error-message">
           {error.message}
         </div>
       )}
     </div>
   );
-};
+}
 
 export default Form;
