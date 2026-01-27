@@ -17,15 +17,15 @@ function Dashboard() {
   useEffect(() => {
     fetchMetrics();
 
-
+    // Subscribe to changes so the chart updates in real time.
     const channel = supabase
       .channel('deal-changes')
       .on(
         'postgres_changes',
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'sales_deals' 
+        {
+          event: '*',
+          schema: 'public',
+          table: 'sales_deals',
         },
         payload => {
           console.log(payload);
@@ -37,7 +37,6 @@ function Dashboard() {
       supabase.removeChannel(channel);
     };
   }, []);
-
 
   async function fetchMetrics() {
     try {
@@ -74,16 +73,8 @@ function Dashboard() {
   };
 
   return (
-    <div
-      className="dashboard-wrapper"
-      role="region"
-      aria-label="Sales dashboard"
-    >
-      <div
-        className="chart-container"
-        role="region"
-        aria-label="Sales chart and data"
-      >
+    <section className="dashboard-wrapper" aria-label="Sales dashboard">
+      <section className="chart-container" aria-label="Sales chart and data">
         <h2>Total Sales This Quarter ($)</h2>
         <div style={{ flex: 1 }}>
           <ResponsiveContainer width="100%" height={320}>
@@ -95,9 +86,9 @@ function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </section>
       <Form metrics={metrics} />
-    </div>
+    </section>
   );
 };
 
