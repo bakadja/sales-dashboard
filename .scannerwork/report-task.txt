@@ -1,0 +1,6 @@
+projectKey=sales-dashboard
+serverUrl=http://localhost:9000
+serverVersion=26.1.0.118079
+dashboardUrl=http://localhost:9000/dashboard?id=sales-dashboard
+ceTaskId=99fb10d2-4426-497a-b374-c2982d8ccdfd
+ceTaskUrl=http://localhost:9000/api/ce/task?id=99fb10d2-4426-497a-b374-c2982d8ccdfd
