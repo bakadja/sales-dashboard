@@ -28,7 +28,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   })()
 
-  //2) Listen for changes in auth state
+  //TODO Listen for changes in auth state
 
   }, []);
 
