@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "sonar": "docker run --rm --network sonar-net -e SONAR_TOKEN -v $(pwd):/usr/src sonarsource/sonar-scanner-cli",
+    "sonar": "./scripts/sonar.sh",
     "quality": "npm run typecheck && npm run lint && npm run sonar"
   },
   "dependencies": {
