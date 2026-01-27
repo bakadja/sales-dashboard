@@ -28,7 +28,14 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   })()
 
-  //TODO Listen for changes in auth state
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, updatedSession) => {
+    console.log("updatedSession",updatedSession)
+    setSession(updatedSession);
+  });
+
+  return () => {
+    subscription.unsubscribe();
+  };
 
   }, []);
 
