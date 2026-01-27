@@ -1,6 +1,6 @@
 projectKey=sales-dashboard
-serverUrl=http://localhost:9000
+serverUrl=http://sonarqube:9000
 serverVersion=26.1.0.118079
-dashboardUrl=http://localhost:9000/dashboard?id=sales-dashboard
-ceTaskId=99fb10d2-4426-497a-b374-c2982d8ccdfd
-ceTaskUrl=http://localhost:9000/api/ce/task?id=99fb10d2-4426-497a-b374-c2982d8ccdfd
+dashboardUrl=http://sonarqube:9000/dashboard?id=sales-dashboard
+ceTaskId=4804bf4f-df2a-4962-9c4d-c58fb511744e
+ceTaskUrl=http://sonarqube:9000/api/ce/task?id=4804bf4f-df2a-4962-9c4d-c58fb511744e
