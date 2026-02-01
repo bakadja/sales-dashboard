@@ -1,24 +1,28 @@
 import { useActionState } from 'react';
 import supabase from '../supabase-client';
-import type { Metric } from '../types/metrics';
+import { useAuth } from '../context/useAuth';
 
-type FormProps = Readonly<{
-  metrics: Metric[];
-}>;
+function Form() {
+  const { users, session } = useAuth();
 
-function Form({ metrics }: FormProps) {
   const [error, submitAction, isPending] = useActionState<Error | null, FormData>(
     async (_previousState, formData) => {
-      // FormData entries can be strings or files, so validate types before use.
-      const nameEntry = formData.get('name');
-      const valueEntry = formData.get('value');
-      const name = typeof nameEntry === 'string' ? nameEntry : '';
-      const value = typeof valueEntry === 'string' ? Number(valueEntry) : 0;
+      const submittedName = formData.get('name');
+      if (typeof submittedName !== 'string' || !submittedName.trim()) {
+        return new Error('Please select a sales rep');
+      }
+      const trimmedName = submittedName.trim();
+      const user = users.find((u) => u.name === trimmedName);
+
+      if (!user) {
+        return new Error('Invalid user selected');
+      }
+
       const newDeal = {
-        name,
-        value,
+        user_id: user.id,
+        value: formData.get('value'),
       };
-      console.log(newDeal);
+      console.log('newDeal', newDeal);
       const { error } = await supabase.from('sales_deals').insert(newDeal);
       if (error) {
         console.error('Error adding deal: ', error.message);
@@ -30,12 +34,16 @@ function Form({ metrics }: FormProps) {
     null
   );
 
+  const currentUser = users.find((u) => u.id === session?.user?.id);
+
   const generateOptions = () => {
-    return metrics.map((metric) => (
-      <option key={metric.name} value={metric.name}>
-        {metric.name}
-      </option>
-    ));
+    return users
+      .filter((user) => user.account_type === 'rep')
+      .map((user) => (
+        <option key={user.id} value={user.name ?? ''}>
+          {user.name ?? 'Unnamed rep'}
+        </option>
+      ));
   };
 
   return (
@@ -50,23 +58,39 @@ function Form({ metrics }: FormProps) {
           the amount.
         </div>
 
-        <label htmlFor="deal-name">
-          <span>Name:</span>
-          <select
-            id="deal-name"
-            name="name"
-            defaultValue={metrics?.[0]?.name || ''}
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            disabled={isPending}
-          >
-            {generateOptions()}
-          </select>
-        </label>
+        {currentUser?.account_type === 'rep' ? (
+          <label htmlFor="deal-name">
+            Name:{' '}
+            <input
+              id="deal-name"
+              type="text"
+              name="name"
+              value={currentUser?.name ?? ''}
+              readOnly
+              className="rep-name-input"
+              aria-label="Sales representative name"
+              aria-readonly="true"
+            />
+          </label>
+        ) : (
+          <label htmlFor="deal-name">
+            Name:{' '}
+            <select
+              id="deal-name"
+              name="name"
+              defaultValue={users[0]?.name ?? ''}
+              aria-required="true"
+              aria-invalid={error ? 'true' : 'false'}
+              disabled={isPending}
+            >
+              {generateOptions()}
+            </select>
+          </label>
+        )
+        }
 
         <label htmlFor="deal-value">
-          <span>Amount:</span>
-          <span aria-hidden="true">$</span>
+          Amount: ${' '}
           <input
             id="deal-value"
             type="number"
@@ -87,15 +111,15 @@ function Form({ metrics }: FormProps) {
           disabled={isPending}
           aria-busy={isPending}
         >
-          {isPending ? 'Adding...' : "Add Deal"}
+          {isPending ? 'Adding...' : 'Add Deal'}
         </button>
       </form>
 
-      {error && (
+      {error ? (
         <div role="alert" className="error-message">
           {error.message}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
