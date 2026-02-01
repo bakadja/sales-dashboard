@@ -16,11 +16,12 @@ type SalesChartDatum = {
 type SalesChartProps = {
   data: SalesChartDatum[];
   yMax: number;
+  height?: number;
 };
 
-const SalesChart = ({ data, yMax }: SalesChartProps) => {
+const SalesChart = ({ data, yMax, height = 320 }: SalesChartProps) => {
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 12, right: 24, left: 0, bottom: 24 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" interval={0} angle={-10} textAnchor="end" />

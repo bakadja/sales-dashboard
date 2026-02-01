@@ -72,7 +72,7 @@ function Dashboard() {
         <h2>Total Sales This Quarter ($)</h2>
         <div style={{ flex: 1, minHeight: 320 }}>
           <Suspense fallback={<div>Loading chart...</div>}>
-            <SalesChart data={chartData} yMax={yMax} />
+            <SalesChart data={chartData} yMax={yMax} height={320} />
           </Suspense>
         </div>
       </section>
