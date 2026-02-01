@@ -27,8 +27,10 @@ function Header() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const currentUser = users.find((user) => user.id === session?.user?.id);
-  console.log(currentUser);
+  const currentUser = users.length > 0 
+    ? users.find((user) => user.id === session?.user?.id)
+    : session?.user?.user_metadata
+  console.log("currentUser",currentUser);
 
   const handleSignOut = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
