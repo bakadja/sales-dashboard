@@ -2,7 +2,7 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    - cron: "0 0 */3 * *" # Toutes les 3 jours à minuit UTC
+    - cron: "0 0 * * *" # Toutes les jours à minuit UTC
   workflow_dispatch:
 
 jobs:
@@ -12,5 +12,5 @@ jobs:
     steps:
       - name: Ping Supabase
         run: |
-          curl -L -X GET "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/" \
+          curl -L -X GET "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/sales_deals?select=id&limit=1" \
           -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
