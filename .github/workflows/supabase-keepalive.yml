@@ -2,7 +2,7 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    - cron: "0 0 * * *" # Toutes les jours à minuit UTC
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Supabase
+      - name: Call Supabase keep_alive RPC
         run: |
-          curl -L -X GET "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/sales_deals?select=id&limit=1" \
-          -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
+          response=$(curl -sS -L \
+            -X POST \
+            "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/rpc/keep_alive" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            -w "\nHTTP_STATUS:%{http_code}")
+
+          echo "$response"
+
+          echo "$response" | grep "HTTP_STATUS:200" > /dev/null
