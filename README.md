@@ -7,6 +7,7 @@
 ![supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ecf8e)
 ![recharts](https://img.shields.io/badge/Recharts-Data%20Viz-22b0b9)
 [![CI](https://github.com/bakadja/sales-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/bakadja/sales-dashboard/actions/workflows/ci.yml)
+[![SonarQube Cloud](https://img.shields.io/badge/SonarQube%20Cloud-Quality%20Gate-126ED3)](https://sonarcloud.io/dashboard?id=bakadja_sales-dashboard)
 
 A lightweight sales team dashboard that authenticates users, visualizes total sales per rep, and lets admins or reps add new deals in real time. Built to showcase clean React architecture, Supabase integration, and a polished, accessible UI.
 
@@ -41,7 +42,7 @@ This project provides a simple, recruiter-friendly example of a real-world dashb
 - **Data & Auth:** Supabase JS
 - **Charts:** Recharts
 - **Testing:** Vitest, React Testing Library
-- **Quality:** TypeScript type checking, ESLint, SonarQube
+- **Quality:** TypeScript type checking, ESLint, SonarQube Cloud
 - **CI:** GitHub Actions (`typecheck` → `lint` → `test` → `build`)
 
 ## Architecture Overview
@@ -68,7 +69,7 @@ This project provides a simple, recruiter-friendly example of a real-world dashb
 
 The repository includes focused component tests for authentication-aware routing and the role-aware deal form. Tests run with Vitest and React Testing Library in jsdom and mock external service boundaries, so they do not require live Supabase credentials.
 
-Every pull request to `main` runs GitHub Actions CI with TypeScript type checking, ESLint, automated tests, and a production build. SonarQube remains available through the existing local `npm run sonar` / `npm run quality` workflow. The separate Supabase Keep Alive workflow is operational automation, not the CI pipeline.
+Every pull request to `main` runs GitHub Actions CI with TypeScript type checking, ESLint, automated tests, and a production build. Pull requests are also automatically analyzed by SonarQube Cloud for maintainability, reliability, and security issues, with the Quality Gate reported directly in GitHub. The separate Supabase Keep Alive workflow is operational automation, not the CI pipeline.
 
 ## Screenshots
 > Add your own images in `docs/screenshots/` and update paths below.
