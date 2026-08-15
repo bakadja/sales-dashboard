@@ -1,6 +1,7 @@
 import { useActionState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
+import AuthInput from './AuthInput';
 
 const Signin = () => {
   const { signInUser } = useAuth();
@@ -34,7 +35,8 @@ const Signin = () => {
         return null;
       }
       return null;
-    }, null
+    },
+    null,
   );
 
   return (
@@ -59,32 +61,22 @@ const Signin = () => {
             </Link>
           </p>
 
-          <label htmlFor="email">Email</label>
-          <input
-            className="form-input"
-            type="email"
+          <AuthInput
+            label="Email"
             name="email"
-            id="email"
-            placeholder=""
-            required
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'signin-error' : undefined}
-            disabled={isPending}
+            type="email"
+            errorId="signin-error"
+            hasError={Boolean(error)}
+            isPending={isPending}
           />
 
-          <label htmlFor="password">Password</label>
-          <input
-            className="form-input"
-            type="password"
+          <AuthInput
+            label="Password"
             name="password"
-            id="password"
-            placeholder=""
-            required
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'signin-error' : undefined}
-            disabled={isPending}
+            type="password"
+            errorId="signin-error"
+            hasError={Boolean(error)}
+            isPending={isPending}
           />
 
           <button
