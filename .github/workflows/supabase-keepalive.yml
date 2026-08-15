@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Call Supabase keep_alive RPC
         run: |
-          response=$(curl -sS -L \
+          response=$(curl --proto "=https" -sS -L \
             -X POST \
             "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/rpc/keep_alive" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
