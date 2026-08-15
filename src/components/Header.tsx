@@ -27,10 +27,10 @@ function Header() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
-  const currentUser = users.length > 0 
+  const currentUser = users.length > 0
     ? users.find((user) => user.id === session?.user?.id)
-    : session?.user?.user_metadata
-  console.log("currentUser",currentUser);
+    : session?.user?.user_metadata;
+  console.log('currentUser', currentUser);
 
   const handleSignOut = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -66,7 +66,11 @@ function Header() {
             {error}
           </div>
         ) : null}
-        <button onClick={handleSignOut} aria-label="Sign out of your account">
+        <button
+          type="button"
+          onClick={handleSignOut}
+          aria-label="Sign out of your account"
+        >
           Sign out
         </button>
       </nav>
@@ -76,6 +80,6 @@ function Header() {
       </h1>
     </header>
   );
-};
+}
 
 export default Header;

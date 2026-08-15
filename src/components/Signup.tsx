@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { useActionState } from 'react';
+import AuthInput from './AuthInput';
 
 const Signup = () => {
   const { signUpNewUser } = useAuth();
@@ -28,15 +29,17 @@ const Signup = () => {
       if (!trimmedEmail || !trimmedPassword || !trimmedName || !trimmedAccountType) {
         return new Error('Please fill out all fields.');
       }
-      if (!email || !password || !name || !accountType) {
-        return new Error('Please fill out all fields.');
-      }
 
       const {
         success,
         data,
         error: signUpError,
-      } = await signUpNewUser(trimmedEmail, trimmedPassword, trimmedName, trimmedAccountType);
+      } = await signUpNewUser(
+        trimmedEmail,
+        trimmedPassword,
+        trimmedName,
+        trimmedAccountType,
+      );
 
       if (signUpError) {
         return new Error(signUpError);
@@ -48,7 +51,7 @@ const Signup = () => {
       }
       return null;
     },
-    null
+    null,
   );
 
   return (
@@ -73,46 +76,31 @@ const Signup = () => {
             </Link>
           </p>
 
-          <label htmlFor="name">Name</label>
-          <input
-            className="form-input"
-            type="text"
+          <AuthInput
+            label="Name"
             name="name"
-            id="name"
-            placeholder=""
-            required
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'signup-error' : undefined}
-            disabled={isPending}
+            type="text"
+            errorId="signup-error"
+            hasError={Boolean(error)}
+            isPending={isPending}
           />
 
-          <label htmlFor="email">Email</label>
-          <input
-            className="form-input"
-            type="email"
+          <AuthInput
+            label="Email"
             name="email"
-            id="email"
-            placeholder=""
-            required
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'signup-error' : undefined}
-            disabled={isPending}
+            type="email"
+            errorId="signup-error"
+            hasError={Boolean(error)}
+            isPending={isPending}
           />
 
-          <label htmlFor="password">Password</label>
-          <input
-            className="form-input"
-            type="password"
+          <AuthInput
+            label="Password"
             name="password"
-            id="password"
-            placeholder=""
-            required
-            aria-required="true"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'signup-error' : undefined}
-            disabled={isPending}
+            type="password"
+            errorId="signup-error"
+            hasError={Boolean(error)}
+            isPending={isPending}
           />
 
           <fieldset
