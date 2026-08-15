@@ -6,8 +6,13 @@
 ![vite](https://img.shields.io/badge/Vite-7.x-646cff)
 ![supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ecf8e)
 ![recharts](https://img.shields.io/badge/Recharts-Data%20Viz-22b0b9)
+[![CI](https://github.com/bakadja/sales-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/bakadja/sales-dashboard/actions/workflows/ci.yml)
 
 A lightweight sales team dashboard that authenticates users, visualizes total sales per rep, and lets admins or reps add new deals in real time. Built to showcase clean React architecture, Supabase integration, and a polished, accessible UI.
+
+## Live Demo
+
+https://sales-dashboard.kevinngongang.dev
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -16,9 +21,9 @@ A lightweight sales team dashboard that authenticates users, visualizes total sa
 - [Architecture Overview](#architecture-overview)
 - [What I Implemented](#what-i-implemented)
 - [What I Learned / Skills Demonstrated](#what-i-learned--skills-demonstrated)
+- [Testing & Quality](#testing--quality)
 - [Screenshots](#screenshots)
 - [How to Run Locally](#how-to-run-locally)
-
 
 ## Project Overview
 This project provides a simple, recruiter-friendly example of a real-world dashboard: secure sign-in, protected routes, real-time data updates, and a visual KPI view. The goal is clarity and maintainability, not just UI polish.
@@ -35,7 +40,9 @@ This project provides a simple, recruiter-friendly example of a real-world dashb
 - **Routing:** React Router
 - **Data & Auth:** Supabase JS
 - **Charts:** Recharts
-- **Tooling:** ESLint, TypeScript project references
+- **Testing:** Vitest, React Testing Library
+- **Quality:** TypeScript type checking, ESLint, SonarQube
+- **CI:** GitHub Actions (`typecheck` → `lint` → `test` → `build`)
 
 ## Architecture Overview
 - `src/router.tsx` defines routes, lazy-loads the dashboard, and protects private views.
@@ -57,6 +64,12 @@ This project provides a simple, recruiter-friendly example of a real-world dashb
 - Data visualization basics with Recharts
 - Writing accessible, validation-friendly forms
 
+## Testing & Quality
+
+The repository includes focused component tests for authentication-aware routing and the role-aware deal form. Tests run with Vitest and React Testing Library in jsdom and mock external service boundaries, so they do not require live Supabase credentials.
+
+Every pull request to `main` runs GitHub Actions CI with TypeScript type checking, ESLint, automated tests, and a production build. SonarQube remains available through the existing local `npm run sonar` / `npm run quality` workflow. The separate Supabase Keep Alive workflow is operational automation, not the CI pipeline.
+
 ## Screenshots
 > Add your own images in `docs/screenshots/` and update paths below.
 
@@ -69,7 +82,6 @@ This project provides a simple, recruiter-friendly example of a real-world dashb
 
   ![Auth Signup](public/auth_signup.png)
   ![Auth Signin](public/auth_signin.png)
-
 
 ## How to Run Locally
 1. Install dependencies:
@@ -91,5 +103,13 @@ VITE_SUPABASE_KEY=your_supabase_anon_key
 npm run dev
 ```
 
-> Note: This app expects Supabase tables such as `user_profiles` (id, name, account_type) and `sales_deals` (user_id, value). Adjust the schema as needed for your project.
+### Run automated checks
 
+```bash
+npm run typecheck
+npm run lint
+npm run test:run
+npm run build
+```
+
+> Note: This app expects Supabase tables such as `user_profiles` (id, name, account_type) and `sales_deals` (user_id, value). Adjust the schema as needed for your project.
