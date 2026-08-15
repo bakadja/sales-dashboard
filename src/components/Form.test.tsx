@@ -1,8 +1,8 @@
-import type { Session } from '@supabase/supabase-js';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useAuth } from '../context/useAuth';
+import { authValue, sessionFor } from '../test/auth-fixtures';
 import Form from './Form';
 
 vi.mock('../context/useAuth', () => ({
@@ -18,12 +18,6 @@ vi.mock('../supabase-client', () => ({
 }));
 
 const mockedUseAuth = vi.mocked(useAuth);
-const sessionFor = (id: string) => ({ user: { id } }) as unknown as Session;
-const authMethods = {
-  signInUser: vi.fn(async () => ({ success: true })),
-  signOut: vi.fn(async () => ({ success: true })),
-  signUpNewUser: vi.fn(async () => ({ success: true })),
-};
 
 const users = [
   { id: 'rep-1', name: 'Alice', account_type: 'rep' },
@@ -37,11 +31,7 @@ describe('Form', () => {
   });
 
   it('shows a rep their own name in a read-only field', () => {
-    mockedUseAuth.mockReturnValue({
-      ...authMethods,
-      session: sessionFor('rep-1'),
-      users,
-    });
+    mockedUseAuth.mockReturnValue(authValue(sessionFor('rep-1'), users));
 
     render(<Form />);
 
@@ -53,11 +43,7 @@ describe('Form', () => {
   });
 
   it('lets an admin choose from sales representatives only', () => {
-    mockedUseAuth.mockReturnValue({
-      ...authMethods,
-      session: sessionFor('admin-1'),
-      users,
-    });
+    mockedUseAuth.mockReturnValue(authValue(sessionFor('admin-1'), users));
 
     render(<Form />);
 
@@ -70,11 +56,7 @@ describe('Form', () => {
 
   it('shows a validation error when submitted with a user not present in auth state', async () => {
     const user = userEvent.setup();
-    mockedUseAuth.mockReturnValue({
-      ...authMethods,
-      session: sessionFor('admin-1'),
-      users,
-    });
+    mockedUseAuth.mockReturnValue(authValue(sessionFor('admin-1'), users));
 
     render(<Form />);
 

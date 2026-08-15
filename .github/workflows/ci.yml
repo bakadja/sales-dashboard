@@ -9,12 +9,11 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   quality:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
