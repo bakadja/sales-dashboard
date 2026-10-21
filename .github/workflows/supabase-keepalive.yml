@@ -5,22 +5,61 @@ on:
     - cron: "0 */12 * * *"
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   ping:
     runs-on: ubuntu-latest
-
     steps:
       - name: Call Supabase keep_alive RPC
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL || secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        shell: bash
         run: |
-          response=$(curl --proto "=https" -sS -L \
-            -X POST \
-            "https://dlbsdqnaqwksbuzxszsf.supabase.co/rest/v1/rpc/keep_alive" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{}' \
-            -w "\nHTTP_STATUS:%{http_code}")
+          set -euo pipefail
 
-          echo "$response"
+          if [[ -z "$SUPABASE_URL" ]]; then
+            echo "::error::Missing SUPABASE_URL (repository variable or Actions secret)."
+            exit 1
+          fi
+          if [[ -z "$SUPABASE_ANON_KEY" ]]; then
+            echo "::error::Missing SUPABASE_ANON_KEY Actions secret."
+            exit 1
+          fi
 
-          echo "$response" | grep "HTTP_STATUS:200" > /dev/null
+          supabase_url="${SUPABASE_URL%/}"
+          if [[ ! "$supabase_url" =~ ^https://[[:alnum:]][[:alnum:].-]*(:[0-9]+)?$ ]]; then
+            echo "::error::SUPABASE_URL must be an HTTPS origin without a path."
+            exit 1
+          fi
+
+          if ! http_status=$(curl --proto '=https' --silent --show-error \
+            --connect-timeout 10 --max-time 30 --retry 2 \
+            --request POST \
+            --url "${supabase_url}/rest/v1/rpc/keep_alive" \
+            --header "apikey: ${SUPABASE_ANON_KEY}" \
+            --header "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            --header 'Content-Type: application/json' \
+            --data '{}' --output /dev/null --write-out '%{http_code}'); then
+            echo "::error::Supabase request failed at network/TLS level. Check project status and DNS."
+            exit 1
+          fi
+
+          case "$http_status" in
+            2??)
+              echo "Supabase keep_alive succeeded (HTTP ${http_status})."
+              ;;
+            401|403)
+              echo "::error::Supabase returned HTTP ${http_status}: check anon key and RPC permissions."
+              exit 1
+              ;;
+            404)
+              echo "::error::Supabase returned HTTP 404: check project URL and keep_alive RPC."
+              exit 1
+              ;;
+            *)
+              echo "::error::Supabase keep_alive returned HTTP ${http_status}. Check project availability and logs."
+              exit 1
+              ;;
+          esac
